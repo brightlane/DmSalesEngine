@@ -1,45 +1,88 @@
-name: Daily Funnel Build
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ManyChat 240K Global Empire | Affiliate Funnel Hub</title>
+  <meta name="description" content="Global ManyChat affiliate pages for 12 countries, 3 plans, 50% commission funnels." />
 
-on:
-  schedule:
-    - cron: "0 6 * * *"   # runs daily at 6:00 UTC
-  workflow_dispatch:      # allows manual run
+  <style>
+    :root{
+      --p:#ff6b35;
+      --bg:#f8f9fa;
+      --hl:#667eea;
+      --dark:#292f36;
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:system-ui;background:var(--bg);color:var(--dark)}
+    .hero{background:linear-gradient(135deg,var(--hl),#764ba2);color:white;padding:60px 20px;text-align:center}
+    .container{max-width:1000px;margin:0 auto;padding:20px}
+    .nav-countries{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:20px 0}
+    .nav-plan{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:8px 0}
+    .nav-countries a, .nav-plan a{
+      display:block;background:var(--p);color:white;padding:16px;border-radius:8px;text-decoration:none;
+      transition: all 0.2s ease;
+    }
+    .nav-countries a:hover, .nav-plan a:hover{
+      transform:scale(1.04);
+      box-shadow:0 4px 12px rgba(0,0,0,0.2)
+    }
+    .section{margin:40px 0}
+    .section h2{margin-bottom:16px;color:var(--hl)}
+    .footer{background:#1a1a1a;color:white;padding:30px 20px;text-align:center;margin-top:60px}
+  </style>
+</head>
+<body>
+  <div class="hero">
+    <h1>🤖 ManyChat 240K Global Empire</h1>
+    <p>SEO funnel hub for 12 countries × 3 plans × ManyChat affiliate funnels</p>
+  </div>
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
+  <div class="container">
+    <section class="section">
+      <h2>🌍 Choose your country</h2>
+      <div class="nav-countries">
+        <a href="manychat/us-starter-usd.html">US – Starter</a>
+        <a href="manychat/br-starter-brl.html">BR – Starter</a>
+        <a href="manychat/eu-starter-eur.html">EU – Starter</a>
+        <a href="manychat/au-starter-aud.html">AU – Starter</a>
+        <a href="manychat/ca-starter-cad.html">CA – Starter</a>
+        <a href="manychat/gb-starter-gbp.html">GB – Starter</a>
+        <a href="manychat/jp-starter-jpy.html">JP – Starter</a>
+        <a href="manychat/za-starter-zar.html">ZA – Starter</a>
+        <a href="manychat/mx-starter-mxn.html">MX – Starter</a>
+        <a href="manychat/in-starter-inr.html">IN – Starter</a>
+        <a href="manychat/cn-starter-cny.html">CN – Starter</a>
+        <a href="manychat/ae-starter-aed.html">AE – Starter</a>
+      </div>
+    </section>
 
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+    <section class="section">
+      <h2>🎯 Next-tier plans</h2>
+      <p>Click into your country + plan combo for full affiliate funnels.</p>
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
+      <div class="nav-plan">
+        <a href="manychat/us-pro-usd.html">Pro (US)</a>
+        <a href="manychat/us-business-usd.html">Business (US)</a>
+        <a href="manychat/br-pro-brl.html">Pro (BR)</a>
+        <a href="manychat/br-business-brl.html">Business (BR)</a>
+        <a href="manychat/eu-pro-eur.html">Pro (EU)</a>
+        <a href="manychat/eu-business-eur.html">Business (EU)</a>
+      </div>
+    </section>
 
-      - name: Install dependencies
-        run: npm ci
+    <section class="section">
+      <h2>✨ How to use this hub</h2>
+      <ul>
+        <li>Use this page as the entry point for your <strong>Twitter / TikTok / Reddit / SEO</strong> posts.</li>
+        <li>Link to specific country pages (example: <a href="https://bot.yourdomain.com/manychat/us-starter-usd.html">US Starter Funnel</a>).</li>
+        <li>Each ManyChat page can trigger a bot flow that captures email + niche.</li>
+      </ul>
+    </section>
+  </div>
 
-      # 👉 If you generate pages dynamically, keep this
-      - name: Build pages
-        run: npm run build || echo "No build step"
-
-      # 👉 If you're just updating timestamps or forcing refresh:
-      - name: Touch files (force update)
-        run: |
-          echo "Last updated: $(date)" >> build-log.txt
-
-      - name: Commit & Push if changed
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
-          git add -A
-
-          if git diff --cached --quiet; then
-            echo "No changes to commit"
-          else
-            git commit -m "Daily auto-build"
-            git push
-          fi
+  <div class="footer">
+    <p>© 2026 ManyChat 240K Global Empire | Built with Node.js & ManyChat</p>
+  </div>
+</body>
+</html>
