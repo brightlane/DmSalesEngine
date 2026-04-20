@@ -1,0 +1,63 @@
+# .github/workflows/deploy.yml - GitHub Actions for auto-deploy + SEO ping (Cron every 6h)
+# Push to main → Builds, deploys to GitHub Pages/Netlify, pings Google/Search Console
+
+name: Deploy ManyChat Affiliate SEO Site
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 */6 * * *'  # Rebuild 4x/day for fresh content/SEO
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+
+    - name: Install & Generate Site
+      run: |
+        npm init -y  # If no package.json
+        node generator.js
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      if: github.ref == 'refs/heads/main'
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./dist
+        publish_branch: gh-pages  # yoursite.github.io
+
+    - name: Deploy to Netlify (Alt)
+      if: github.ref == 'refs/heads/main'
+      env:
+        NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+      run: |
+        npm install -g netlify-cli
+        netlify deploy --dir=dist --prod
+
+    - name: SEO Ping (Google, Bing, IndexNow)
+      if: github.ref == 'refs/heads/main'
+      run: |
+        curl -s https://www.google.com/ping?sitemap=https://yoursite.github.io/sitemap.xml &
+        curl -s "https://www.bing.com/ping?sitemap=https://yoursite.github.io/sitemap.xml" &
+        curl -X POST -H "Content-Type: application/json" \
+          -d "{\"url\":\"https://yoursite.github.io/sitemap.xml\"}" \
+          https://www.indexnow.org/httpheaders?key=YOUR_KEY  # Free signup
+
+    - name: Notify Discord/Slack (Optional Conversions Track)
+      if: always()
+      uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        webhook_url: ${{ secrets.SLACK_WEBHOOK }}  # Paste your webhook
+        text: '🚀 ManyChat Site Deployed! Pages: 100+, Sitemap Pushed.'
