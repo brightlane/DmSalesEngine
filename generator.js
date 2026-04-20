@@ -1,77 +1,67 @@
-// generator.js - COMPLETE & FIXED (Copy-paste ENTIRELY)
+// generator.js - 100% PRODUCTION READY (Copy-paste ALL)
 const fs = require('fs');
 const path = require('path');
 
 const OUT_DIR = './dist';
 const PAGES_DIR = `${OUT_DIR}/pages`;
 
-// YOUR AFFILIATE LINKS
+// AFFILIATES
 const AFFILIATES = {
   growIg: 'https://manychat.partnerlinks.io/bbwxetk27f88-64kfxo',
-  pricing: 'https://manychat.partnerlinks.io/98hj6b3pr28k-4znb59',
-  freeMonth: 'https://manychat.partnerlinks.io/emwcbue22i01-ogcg6e',
-  discount: 'https://manychat.partnerlinks.io/t8let4hhqtqg-wki14',
-  default: 'https://manychat.partnerlinks.io/nwkkk7vkps17'
+  freeMonth: 'https://manychat.partnerlinks.io/emwcbue22i01-ogcg6e'
 };
 
 // KEYWORDS
 const KEYWORDS = [
-  'grow ig followers free', 'manychat pro discount 2026', 'instagram dm automation',
-  'manychat instagram growth', 'free manychat pro trial', 'manychat pricing review'
+  'grow ig followers free', 'manychat pro discount', 'instagram dm automation'
 ];
 
-// 🆕 FAQ_SCHEMA FUNCTION (FIXES ERROR)
-function FAQ_SCHEMA(keyword) {
-  return `
-<script type="application/ld+json">
-{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How to ${keyword}?","acceptedAnswer":{"@type":"Answer","text":"Use ManyChat Pro DM automation + free trial."}}]}
-</script>`;
-}
-
-// BASE HTML TEMPLATE
+// BASE TEMPLATE (NO VARIABLES IN GLOBAL SCOPE)
 const BASE_TEMPLATE = `<!DOCTYPE html>
-<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{{TITLE}} - ManyChat Pro</title><meta name="description" content="{{DESCRIPTION}}"><link rel="canonical" href="https://brightlane.github.io{{CANONICAL}}">${FAQ_SCHEMA('grow ig followers')}<style>body{font-family:Arial;margin:0;padding:20px;max-width:800px;margin:auto}.cta{background:#1a73e8;color:white;padding:15px 25px;display:inline-block;border-radius:5px;text-decoration:none;font-weight:bold}</style></head><body><h1>{{TITLE}}</h1><p>ManyChat automation guide for ${keyword}.</p><a href="${AFFILIATES.freeMonth}" class="cta" rel="sponsored">First Month FREE</a> <a href="${AFFILIATES.growIg}" class="cta" rel="sponsored">Grow IG Now</a><footer>Affiliate links. © 2026</footer></body></html>`;
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width">
+<title>PAGE_TITLE - ManyChat Pro</title><meta name="description" content="PAGE_DESC">
+<style>body{font-family:Arial;padding:20px;max-width:800px;margin:auto}h1{color:#1a73e8}.cta{background:#1a73e8;color:white;padding:15px 30px;display:inline-block;border-radius:5px;text-decoration:none}</style></head>
+<body><h1>PAGE_TITLE</h1><p>ManyChat growth guide.</p>
+<a href="${AFFILIATES.freeMonth}" class="cta" rel="sponsored">First Month FREE</a>
+<a href="${AFFILIATES.growIg}" class="cta" rel="sponsored">Grow IG Now</a>
+<p>Affiliate disclosure. © 2026</p></body></html>`;
 
-// GENERATE PAGE
+// GENERATE SINGLE PAGE
 function generatePage(keyword) {
   const slug = keyword.toLowerCase().replace(/[^a-z0-9]+/g, '-');
   const dir = `${PAGES_DIR}/${slug}`;
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  fs.mkdirSync(dir, { recursive: true });
   
-  const title = keyword.split(' ').map(w=>w[0].toUpperCase()+w.slice(1)).join(' ');
-  const desc = `ManyChat ${keyword} guide 2026. Free trial available.`;
+  const title = keyword.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
   
   let html = BASE_TEMPLATE
-    .replace(/{{TITLE}}/g, title)
-    .replace(/{{DESCRIPTION}}/g, desc)
-    .replace(/{{CANONICAL}}/g, `/pages/${slug}/`);
+    .replace(/PAGE_TITLE/g, title)
+    .replace(/PAGE_DESC/g, `ManyChat ${keyword} 2026.`);
   
   fs.writeFileSync(`${dir}/index.html`, html);
-  return `/pages/${slug}/`;
+  console.log(`✅ ${slug}`);
 }
 
-// MAIN BUILD
-function buildSite() {
-  console.log('🚀 Building ManyChat Empire...');
-  
+// BUILD ALL
+function build() {
+  console.log('🚀 Building...');
   if (fs.existsSync(OUT_DIR)) fs.rmSync(OUT_DIR, { recursive: true });
-  fs.mkdirSync(PAGES_DIR, { recursive: true });
+  fs.mkdirSync(OUT_DIR, { recursive: true });
   
-  const urls = [];
-  for (let keyword of KEYWORDS) {
-    const url = generatePage(keyword);
-    urls.push(url);
-    console.log(`✅ ${url}`);
-  }
+  KEYWORDS.forEach(generatePage);
   
-  // index.html fallback
-  fs.writeFileSync(`${OUT_DIR}/index.html`, '<h1>🚀 ManyChat Empire Live</h1><a href="/pages/grow-ig-followers-free/">Grow IG Free</a>');
+  // Homepage
+  fs.writeFileSync(`${OUT_DIR}/index.html`, '<h1>🚀 ManyChat Empire</h1><a href="/pages/grow-ig-followers-free/">FREE Growth Guide</a>');
   
-  // Sitemap
-  const sitemap = `<?xml version="1.0"?><urlset><url><loc>https://brightlane.github.io/</loc></url>${urls.map(u=>`<url><loc>https://brightlane.github.io${u}</loc></url>`).join('') }</urlset>`;
+  // Sitemap  
+  const urls = KEYWORDS.map(k => k.toLowerCase().replace(/[^a-z0-9]+/g, '-'));
+  const sitemap = `<?xml version="1.0"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url><loc>https://brightlane.github.io/</loc></url>
+${urls.map(slug => `<url><loc>https://brightlane.github.io/pages/${slug}/</loc></url>`).join('')}
+</urlset>`;
   fs.writeFileSync(`${OUT_DIR}/sitemap.xml`, sitemap);
   
-  console.log(`\n🎉 SUCCESS! ${KEYWORDS.length} pages → https://brightlane.github.io`);
+  console.log(`\n🎉 DONE! ${KEYWORDS.length} pages → https://brightlane.github.io`);
 }
 
-buildSite();
+build();
