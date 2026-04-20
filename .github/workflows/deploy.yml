@@ -1,61 +1,31 @@
-# .github/workflows/deploy.yml - CLEAN PRODUCTION VERSION (Copy-paste exactly)
-# ✅ MANUAL RUN BUTTON + 4x daily auto + NO ERRORS
-
-name: 🚀 ManyChat Affiliate Auto Empire
-
+name: 🚀 ManyChat Empire (Lockfile-Free)
 on:
-  push:
-    branches: [ main ]
-  schedule:
-    - cron: '0 */6 * * *'  # Auto 12AM,6AM,12PM,6PM daily
-  workflow_dispatch:  # 🔴 MANUAL "Run workflow" button
+  push: [ main ]
+  schedule: [ cron: '0 */6 * * *' ]
+  workflow_dispatch:
 
 jobs:
-  build-deploy:
+  deploy:
     runs-on: ubuntu-latest
-    
     steps:
-    - name: 📥 Checkout Code
-      uses: actions/checkout@v4
-
-    - name: 🟢 Setup Node.js
-      uses: actions/setup-node@v4
+    - uses: actions/checkout@v4
+    
+    - uses: actions/setup-node@v4
       with:
         node-version: 20
-        cache: 'npm'
 
-    - name: 📦 Install Dependencies
-      run: npm ci
-
-    - name: 🔨 Build Empire (1000+ Pages)
+    # ✅ NO LOCKFILE NEEDED
+    - name: 📦 Install (npm install not ci)
+      run: npm install
+      
+    - name: 🔨 Build Empire
       run: npm run build
 
-    - name: 🌐 Deploy to GitHub Pages
+    - name: 🌐 Deploy GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./dist
-        user_name: 'github-actions[bot]'
-        user_email: '41898282+github-actions[bot]@users.noreply.github.com'
-        commit_message: 'Auto-deploy from GitHub Actions'
 
-    - name: 🔍 Ping Search Engines (SEO Boost)
-      run: |
-        curl -s "https://www.google.com/ping?sitemap=https://brightlane.github.io/sitemap.xml" || true
-        curl -s "https://www.bing.com/ping?sitemap=https://brightlane.github.io/sitemap.xml" || true
-        echo "✅ Google/Bing notified - indexing starts now"
-
-    - name: 🎉 Success Summary
-      if: success()
-      run: |
-        echo "🎉 EMPIRE DEPLOYED SUCCESSFULLY!"
-        echo "📍 Live: https://brightlane.github.io"
-        echo "📄 Pages: $(find dist/pages -name '*.html' | wc -l)"
-        echo "🗺️ Sitemap: https://brightlane.github.io/sitemap.xml"
-        echo "🔄 Next auto-run: 6 hours"
-
-    - name: ❌ Failure Alert
-      if: failure()
-      run: |
-        echo "❌ Build failed. Check logs above."
-        echo "Common fixes: npm install, generator.js syntax"
+    - name: 🎉 Live Status
+      run: echo "✅ https://brightlane.github.io deployed!"
