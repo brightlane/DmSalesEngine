@@ -1,25 +1,48 @@
-name: Generate ManyChat Feeders
+const fs = require("fs");
+const path = require("path");
 
-on:
-  push:
-    branches: [ main ]
-  workflow_dispatch:
+// Example template list (adjust to your real data source)
+const templates = [
+  "template1",
+  "template2",
+  "template3"
+];
 
-jobs:
-  generate-manychat-feeders:
-    runs-on: ubuntu-latest
+function generateManyChatPages() {
+  const outputDir = path.join(__dirname, "manychat");
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+  if (!fs.existsSync(outputDir)) {
+    fs.mkdirSync(outputDir, { recursive: true });
+  }
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
+  templates.forEach((template) => {
+    // FIXED PATH (this replaces your broken line 131 issue)
+    const filePath = `/manychat/gb-${template}-gbp.html`;
 
-      - name: Install dependencies
-        run: npm install
+    const htmlContent = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>ManyChat Page - ${template}</title>
+</head>
+<body>
 
-      - name: Run script
-        run: node manychat-global-empire.js
+  <h1>Generated Page: ${template}</h1>
+
+  <img src="${filePath}" alt="${template}" />
+
+</body>
+</html>
+`;
+
+    const outputFile = path.join(outputDir, `gb-${template}-gbp.html`);
+
+    fs.writeFileSync(outputFile, htmlContent, "utf8");
+
+    console.log(`Generated: ${outputFile}`);
+  });
+}
+
+// RUN SCRIPT
+generateManyChatPages();
