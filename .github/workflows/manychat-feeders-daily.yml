@@ -1,0 +1,50 @@
+name: ManyChat 240K + Social Feeders Daily
+
+on:
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  generate-manychat-feeders:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run generator
+        run: npm run start
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
+
+      - name: Verify output
+        run: |
+          echo "Files in ./output"
+          ls -la ./output || true
+          echo "HTML count:"
+          find ./output/manychat -name "*.html" 2>/dev/null | wc -l | tr -d ' '
+          echo "Sitemap count:"
+          find ./output -name "sitemap-*.xml" 2>/dev/null | wc -l | tr -d ' '
+
+      - name: Final success report
+        run: |
+          HTML_COUNT=$(find ./output/manychat -name "*.html" 2>/dev/null | wc -l || echo 0)
+          SITEMAP_COUNT=$(find ./output -name "sitemap-*.xml" 2>/dev/null | wc -l || echo 0)
+          echo "=================================="
+          echo "MANYCHAT 240K + SOCIAL FEEDERS READY"
+          echo "Pages: ${HTML_COUNT}"
+          echo "Sitemaps: ${SITEMAP_COUNT}"
+          echo "=================================="
